@@ -6,14 +6,14 @@ var ColladaLoader = require('three-collada-loader');
 export default class App extends Component {
   componentDidMount() {
     var scene = new THREE.Scene();
-    // scene.background = new THREE.Color( 0xffffff );
+    scene.background = new THREE.Color( 0xffffff );
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
     // trying to get shadows to work
     renderer.shadowMap.enabled=true;
     renderer.shadowMap.type = THREE.BasicShadowMap;
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
     // document.body.appendChild( renderer.domElement );
     // use ref as a mount point of the Three.js scene instead of the document.body
@@ -30,7 +30,7 @@ export default class App extends Component {
     var model = new THREE.Mesh(geometry, material);
     var loader = new ColladaLoader();
 
-    var light = new THREE.PointLight( 0xffffff, 2, 18 );
+    var light = new THREE.PointLight( 0xffffff, 1.2, 18 );
     light.position.set( -3, 6, -3 );
     light.castShadow = true;
     light.shadow.camera.near = 0.1;
