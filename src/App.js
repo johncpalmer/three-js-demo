@@ -13,18 +13,28 @@ export default class App extends Component {
     // trying to get shadows to work
     renderer.shadowMap.enabled=true;
     renderer.shadowMap.type = THREE.BasicShadowMap;
+    var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    scene.add(ambientLight);
     // document.body.appendChild( renderer.domElement );
     // use ref as a mount point of the Three.js scene instead of the document.body
     this.mount.appendChild( renderer.domElement );
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { color: 0x393939 } );
     var cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
+    var mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1,1,1),
+      new THREE.MeshPhongMaterial({color: 0xff4444, wireframe: false})
+    );
+    // scene.add(mesh);
+    // scene.add( cube );
     var model = new THREE.Mesh(geometry, material);
     var loader = new ColladaLoader();
 
-    var light = new THREE.PointLight( 0x000000, 1, 10 );
-    light.position.set( 10, 10, 0 );
+    var light = new THREE.PointLight( 0xffffff, 2, 18 );
+    light.position.set( -3, 6, -3 );
+    light.castShadow = true;
+    light.shadow.camera.near = 0.1;
+    light.shadow.camera.far = 25;
     scene.add( light );
 
     var setAllMaterial = (node, material) => {
@@ -38,31 +48,31 @@ export default class App extends Component {
 
     var setTetraMaterial = (node) => {
       // node.material = material;
-      setAllMaterial(node.children[0].children[0], new THREE.MeshBasicMaterial( { color: 0x59C197 } ));
-      setAllMaterial(node.children[0].children[1], new THREE.MeshBasicMaterial( { color: 0xFFD580 } ));
-      setAllMaterial(node.children[0].children[2], new THREE.MeshBasicMaterial( { color: 0x83B5DB } ));
-      setAllMaterial(node.children[0].children[3], new THREE.MeshBasicMaterial( { color: 0xF6C0A4 } ));
-      setAllMaterial(node.children[0].children[4], new THREE.MeshBasicMaterial( { color: 0xE08073 } ));
-      setAllMaterial(node.children[0].children[5], new THREE.MeshBasicMaterial( { color: 0x59C197 } ));
+      setAllMaterial(node.children[0].children[0], new THREE.MeshPhongMaterial( { color: 0x59C197 } ));
+      setAllMaterial(node.children[0].children[1], new THREE.MeshPhongMaterial( { color: 0xFFD580 } ));
+      setAllMaterial(node.children[0].children[2], new THREE.MeshPhongMaterial( { color: 0x83B5DB } ));
+      setAllMaterial(node.children[0].children[3], new THREE.MeshPhongMaterial( { color: 0xF6C0A4 } ));
+      setAllMaterial(node.children[0].children[4], new THREE.MeshPhongMaterial( { color: 0xE08073 } ));
+      setAllMaterial(node.children[0].children[5], new THREE.MeshPhongMaterial( { color: 0x59C197 } ));
     }
 
     loader.load("tetrahedron2.dae", function (result) {
         model = result.scene;
-        setTetraMaterial(model, new THREE.MeshBasicMaterial( { color: 0xccc } ));
+        setTetraMaterial(model);
         model.position.x = 0;
         model.position.y = 0;
         // model.scale.set(.1,.1,.1);
         model.rotation.x = Math.PI / 2;
-        // scene.add(model);
+        scene.add(model);
     });
     camera.position.z = 5;
 
     var animate = function () {
       requestAnimationFrame( animate );
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.005;
-      // model.rotation.x += 0.01;
-      // model.rotation.y += 0.005;
+      // mesh.rotation.x += 0.01;
+      // mesh.rotation.y += 0.005;
+      model.rotation.x += 0.01;
+      model.rotation.y += 0.005;
 
       renderer.render( scene, camera );
     };
