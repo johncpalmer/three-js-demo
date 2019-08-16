@@ -20,18 +20,29 @@ export default class App extends Component {
     var model = new THREE.Mesh(geometry, material);
     var loader = new ColladaLoader();
 
-    var setMaterial = (node, material) => {
+    var setAllMaterial = (node, material) => {
       node.material = material;
       if (node.children) {
         for (var i = 0; i < node.children.length; i++) {
-          setMaterial(node.children[i], material);
+          setAllMaterial(node.children[i], material);
         }
       }
     }
 
-    loader.load("tetrahedron.dae", function (result) {
+    var setTetraMaterial = (node) => {
+      // node.material = material;
+      setAllMaterial(node.children[0].children[0], new THREE.MeshBasicMaterial( { color: 0x59C197 } ));
+      setAllMaterial(node.children[0].children[1], new THREE.MeshBasicMaterial( { color: 0xFFD580 } ));
+      setAllMaterial(node.children[0].children[2], new THREE.MeshBasicMaterial( { color: 0x83B5DB } ));
+      setAllMaterial(node.children[0].children[3], new THREE.MeshBasicMaterial( { color: 0xF6C0A4 } ));
+      setAllMaterial(node.children[0].children[4], new THREE.MeshBasicMaterial( { color: 0xE08073 } ));
+      setAllMaterial(node.children[0].children[5], new THREE.MeshBasicMaterial( { color: 0x59C197 } ));
+    }
+
+    loader.load("tetrahedron2.dae", function (result) {
         model = result.scene;
-        setMaterial(model, new THREE.MeshBasicMaterial({color: 0xacacac}));
+        debugger;
+        setTetraMaterial(model, new THREE.MeshBasicMaterial( { color: 0xccc } ));
         model.position.x = 0;
         model.position.y = 0;
         model.scale.set(.1,.1,.1);
