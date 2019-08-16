@@ -6,19 +6,26 @@ var ColladaLoader = require('three-collada-loader');
 export default class App extends Component {
   componentDidMount() {
     var scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xffffff );
+    // scene.background = new THREE.Color( 0xffffff );
     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
     var renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
+    // trying to get shadows to work
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type = THREE.BasicShadowMap;
     // document.body.appendChild( renderer.domElement );
     // use ref as a mount point of the Three.js scene instead of the document.body
     this.mount.appendChild( renderer.domElement );
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    var material = new THREE.MeshBasicMaterial( { color: 0x393939 } );
     var cube = new THREE.Mesh( geometry, material );
-    // scene.add( cube );
+    scene.add( cube );
     var model = new THREE.Mesh(geometry, material);
     var loader = new ColladaLoader();
+
+    var light = new THREE.PointLight( 0x000000, 1, 10 );
+    light.position.set( 10, 10, 0 );
+    scene.add( light );
 
     var setAllMaterial = (node, material) => {
       node.material = material;
@@ -41,20 +48,21 @@ export default class App extends Component {
 
     loader.load("tetrahedron2.dae", function (result) {
         model = result.scene;
-        debugger;
         setTetraMaterial(model, new THREE.MeshBasicMaterial( { color: 0xccc } ));
         model.position.x = 0;
         model.position.y = 0;
-        model.scale.set(.1,.1,.1);
+        // model.scale.set(.1,.1,.1);
         model.rotation.x = Math.PI / 2;
-        scene.add(model);
+        // scene.add(model);
     });
     camera.position.z = 5;
 
     var animate = function () {
       requestAnimationFrame( animate );
-      model.rotation.x += 0.01;
-      model.rotation.y += 0.005;
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.005;
+      // model.rotation.x += 0.01;
+      // model.rotation.y += 0.005;
 
       renderer.render( scene, camera );
     };
